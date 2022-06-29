@@ -26,9 +26,11 @@ var auditTime = function () {
     $(calEl).next().removeClass("past present future");
     if (timeNow === calendarTime) {
         $(calEl).next().addClass("present");
-    } else if (calMoment.isAfter(timeNowMoment, "hour")){
+    } else if (calMoment.isBefore()){
         $(calEl).next().addClass("past");
-    }
+    } else {
+        $(calEl).next().addClass("future");
+    };
 
 
   }
