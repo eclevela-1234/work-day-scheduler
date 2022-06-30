@@ -1,5 +1,5 @@
 console.log("LET'S ROLL!");
-taskArr = []
+taskArr = [];
 // get time and display in header
 var today = moment().format("dddd, MMMM Do YYYY");
 $("#currentDay").text(today);
@@ -41,11 +41,13 @@ $(".time-block").on("click", ".description", function () {
   //detect placeholder text
   if (text === "Click to add/edit tasks") {
     var textInput = $("<textarea>").prop("placeholder", text);
+    textInput = textInput.addClass("description").attr("id", "texty");
     $(this).replaceWith(textInput);
   }
   // if not placeholder, load as text
   else {
-    var textInput = $("<textarea>").text(text);
+    var textInput = $("<textarea>").text(text).addClass("description").attr("id", "texty");
+    textInput = textInput.addClass("description");
     $(this).replaceWith(textInput);
   }
 
@@ -60,7 +62,6 @@ $(".time-block").on("blur", "textarea", function () {
     text = "Click to add/edit tasks";
   }
 
-
   var taskP = $("<p>").text(text);
   var divEl = $("<div>").addClass("description col-10 pt-2").html(taskP);
 
@@ -71,23 +72,24 @@ $(".time-block").on("blur", "textarea", function () {
 
 //SAVE tasks function
 
-$(".time-block").on("click", ".saveBtn", function () {
+var saveTasks = function () {
   // Get values from description elements
   taskArr = [];
-  var descriptions = $(".description p");
+  var descriptions = $(".description");
 
   for (i = 0; i < descriptions.length; i++) {
     var descEl = descriptions[i];
     var description = descEl.innerText;
-
+    if (!description) {
+        description = $("#texty").val();
+    }
     taskArr.push(description);
   }
   console.log(taskArr);
 
   localStorage.setItem("tasks", JSON.stringify(taskArr));
-});
-
-
+};
+$(".time-block").on("mousedown", ".saveBtn", saveTasks);
 
 var loadTasks = function () {
   taskArr = JSON.parse(localStorage.getItem("tasks"));
@@ -97,16 +99,16 @@ var loadTasks = function () {
     auditTime();
     return;
   } else {
-    var descriptions = $(".description p")
+    var descriptions = $(".description p");
     for (i = 0; i < taskArr.length; i++) {
       text = taskArr[i];
       var description = descriptions[i];
-      $(description).text(text)
-    //   var divEl = $("<div>").addClass("description col-10 pt-2").html(taskP);
-    //   console.log(divEl);
-    //     var descriptions = $(".description p")
-    //     var descEL = descriptions[i];
-    //     descEL.replaceWith(divEl);
+      $(description).text(text);
+      //   var divEl = $("<div>").addClass("description col-10 pt-2").html(taskP);
+      //   console.log(divEl);
+      //     var descriptions = $(".description p")
+      //     var descEL = descriptions[i];
+      //     descEL.replaceWith(divEl);
     }
   }
   auditTime();
