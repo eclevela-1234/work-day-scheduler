@@ -37,21 +37,59 @@ var auditTime = function () {
 
 };
 
+
 $(".time-block").on("click", ".description", function() {
-     var text = $(this)
- .text()
+     var text = $(this).text()
  .trim();
+    //  console.dir(this);
+
     
-    if (!(this).innerText) {
-        var textInput = $("<textarea>").val(text);
-        $(this).append(textInput);
+    // if ((this).innerText) {
+        var textInput = $("<textarea>").prop('placeholder',text);
+        $(this).replaceWith(textInput);
       
         // auto focus new element
         textInput.trigger("focus");
-};
+// };
 
 
 
 });
 
+$(".time-block").on("blur", "textarea", function() {
+    var text = $(this).val();
+    if (!text) {
+        text = "Click to add/edit tasks";
+    }
+    var taskP = $("<p>").text(text); 
+    var divEl = $("<div>").addClass("description col-10 pt-2").html(taskP);
+
+    console.log (divEl);
+    $(this).replaceWith(divEl);
+    auditTime();
+
+});
+
+//load tasks function
+
+taskObj = [
+    {time: "9am",
+     list: ["Do deposits", "Do Invoices", "check email"]}
+]
+
+var loadTasks = function() {
+    tasks = JSON.parse(localStorage.getItem("tasks"));
+
+      // if nothing in localStorage, create a new object to track all task status arrays
+  if (!tasks) {
+    taskArrs = [];
+    hourArr = [];
+    var times = $(".hour");
+    $("<ul>").attr("id", function(){
+        for (i=0; i<times.length; i++) {
+
+        }
+    })
+  }
+}
 auditTime();
