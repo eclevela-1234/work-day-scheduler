@@ -105,8 +105,13 @@ var loadTasks = function () {
   // if nothing in localStorage, create a new array
   if (!taskArr) {
     var taskArr = [];
-    auditTime();
-    return;
+    var descriptions = $(".description");
+    for (i = 0; i < 9; i++) {
+      var text = "Click to add/edit tasks";
+      var pEl = $("<p>").text(text);
+      var description = descriptions[i];
+      $(description).html(pEl);
+    }
   } else {
     var descriptions = $(".description p");
     for (i = 0; i < taskArr.length; i++) {
