@@ -1,13 +1,13 @@
 console.log("LET'S ROLL!");
+
+// Initialize task array
 taskArr = [];
+
 // get time and display in header
 var today = moment().format("dddd, MMMM Do YYYY");
 $("#currentDay").text(today);
 
-// var saveTasks = function() {
-//     localStorage.setItem("tasks", JSON.stringify(tasks));
-//   };
-
+// function to color code workday hours
 var auditTime = function () {
   // get time text from hour classes
   var times = $(".hour");
@@ -35,37 +35,42 @@ var auditTime = function () {
   }
 };
 
+// event listener plus function to allow task inputs in the timeblocks
 $(".time-block").on("click", ".description", function () {
   var text = $(this).text().trim();
 
   //detect placeholder text
   if (text === "Click to add/edit tasks") {
     var textInput = $("<textarea>").prop("placeholder", text);
+
+    // added id attribute to resolve blur/cleck conflict
     textInput = textInput.addClass("description").attr("id", "texty");
     $(this).replaceWith(textInput);
   }
   // if not placeholder, load as text
   else {
-    var textInput = $("<textarea>").text(text).addClass("description").attr("id", "texty");
+    var textInput = $("<textarea>")
+      .text(text)
+      .addClass("description")
+      .attr("id", "texty");
     textInput = textInput.addClass("description");
     $(this).replaceWith(textInput);
   }
-
   // auto focus new element
   textInput.trigger("focus");
-  // };
 });
 
 $(".time-block").on("blur", "textarea", function () {
   var text = $(this).val();
+  
+  //check to see if input, if not, return placeholder text
   if (!text) {
     text = "Click to add/edit tasks";
   }
 
+  // re-build p element for timeblocks
   var taskP = $("<p>").text(text);
   var divEl = $("<div>").addClass("description col-10 pt-2").html(taskP);
-
-  console.log(divEl);
   $(this).replaceWith(divEl);
   auditTime();
 });
@@ -75,22 +80,26 @@ $(".time-block").on("blur", "textarea", function () {
 var saveTasks = function () {
   // Get values from description elements
   taskArr = [];
+  // save multiple elems as jQuery obj
   var descriptions = $(".description");
 
   for (i = 0; i < descriptions.length; i++) {
+    //parse into separate elements
     var descEl = descriptions[i];
     var description = descEl.innerText;
+    // to check if save was initiated on blur event, live-textarea
     if (!description) {
-        description = $("#texty").val();
+      description = $("#texty").val();
     }
     taskArr.push(description);
   }
-  console.log(taskArr);
-
   localStorage.setItem("tasks", JSON.stringify(taskArr));
 };
+
+// event listener for saveTasks function
 $(".time-block").on("mousedown", ".saveBtn", saveTasks);
 
+// load on startup
 var loadTasks = function () {
   taskArr = JSON.parse(localStorage.getItem("tasks"));
   // if nothing in localStorage, create a new array
@@ -104,11 +113,6 @@ var loadTasks = function () {
       text = taskArr[i];
       var description = descriptions[i];
       $(description).text(text);
-      //   var divEl = $("<div>").addClass("description col-10 pt-2").html(taskP);
-      //   console.log(divEl);
-      //     var descriptions = $(".description p")
-      //     var descEL = descriptions[i];
-      //     descEL.replaceWith(divEl);
     }
   }
   auditTime();
