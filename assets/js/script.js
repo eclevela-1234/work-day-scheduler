@@ -113,11 +113,12 @@ var loadTasks = function () {
       $(description).html(pEl);
     }
   } else {
-    var descriptions = $(".description p");
+    var descriptions = $(".description");
     for (i = 0; i < taskArr.length; i++) {
-      text = taskArr[i];
+      var text = taskArr[i];
+      var pEl = $("<p>").text(text);
       var description = descriptions[i];
-      $(description).text(text);
+      $(description).html(pEl);
     }
   }
   auditTime();
