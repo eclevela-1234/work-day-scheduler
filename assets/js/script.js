@@ -8,88 +8,94 @@ $("#currentDay").text(today);
 //     localStorage.setItem("tasks", JSON.stringify(tasks));
 //   };
 
-
 var auditTime = function () {
-
   // get time text from hour classes
   var times = $(".hour");
+
   var timeNow = moment().format("ha");
-// loop through hour classes and format corresponding description classes
+  // loop through hour classes and format corresponding description classes
   for (i = 0; i < times.length; i++) {
     // isolate .hour elements
     var calEl = times[i];
     var calendarTime = calEl.innerText;
     // concatenate time with date to create a valid moment input
-    var momentString = today.concat(" ", calendarTime)
+    var momentString = today.concat(" ", calendarTime);
     //parse momentString as moment object
     var calMoment = moment(momentString, "dddd, MMMM Do YYYY ha");
     // remove tense classes and compare calendar
     $(calEl).next().removeClass("past present future");
 
     if (timeNow === calendarTime) {
-        $(calEl).next().addClass("present");
+      $(calEl).next().addClass("present");
     } else if (calMoment.isBefore()) {
-        $(calEl).next().addClass("past");
+      $(calEl).next().addClass("past");
     } else {
-        $(calEl).next().addClass("future");
-    };
+      $(calEl).next().addClass("future");
+    }
   }
-
 };
 
+$(".time-block").on("click", ".description", function () {
+  var text = $(this).text().trim();
 
-$(".time-block").on("click", ".description", function() {
-     var text = $(this).text()
- .trim();
-    //  console.dir(this);
+  //detect placeholder text
+  if (text === "Click to add/edit tasks") {
+    var textInput = $("<textarea>").prop("placeholder", text);
+    $(this).replaceWith(textInput);
+  }
+  // if not placeholder, load as text
+  else {
+    var textInput = $("<textarea>").text(text);
+    $(this).replaceWith(textInput);
+  }
 
-    
-    // if ((this).innerText) {
-        var textInput = $("<textarea>").prop('placeholder',text);
-        $(this).replaceWith(textInput);
+  // auto focus new element
+  textInput.trigger("focus");
+  // };
+});
+
+$(".time-block").on("blur", "textarea", function () {
+  var text = $(this).val();
+  if (!text) {
+    text = "Click to add/edit tasks";
+  }
+  var taskP = $("<p>").text(text);
+  var divEl = $("<div>").addClass("description col-10 pt-2").html(taskP);
+
+  console.log(divEl);
+  $(this).replaceWith(divEl);
+  auditTime();
+});
+
+//SAVE tasks function
+
+$(".time-block").on("click", ".saveBtn", function() {
+    // Get values from description elements
+    var descriptions = $(".description p");
+
+    for (i=0;i<descriptions.length; i++) {
+        var descEl = descriptions[i];
+        var description = descEl.innerText;
       
-        // auto focus new element
-        textInput.trigger("focus");
-// };
-
-
-
-});
-
-$(".time-block").on("blur", "textarea", function() {
-    var text = $(this).val();
-    if (!text) {
-        text = "Click to add/edit tasks";
+        taskArr.push(description);
     }
-    var taskP = $("<p>").text(text); 
-    var divEl = $("<div>").addClass("description col-10 pt-2").html(taskP);
+console.log(taskArr);
+    // store in an array and jsonify to LocalStorage
+})
 
-    console.log (divEl);
-    $(this).replaceWith(divEl);
-    auditTime();
+var taskArr = []
 
-});
+var loadTasks = function () {
+  tasks = JSON.parse(localStorage.getItem("tasks"));
 
-//load tasks function
-
-taskObj = [
-    {time: "9am",
-     list: ["Do deposits", "Do Invoices", "check email"]}
-]
-
-var loadTasks = function() {
-    tasks = JSON.parse(localStorage.getItem("tasks"));
-
-      // if nothing in localStorage, create a new object to track all task status arrays
+  // if nothing in localStorage, create a new object to track all task status arrays
   if (!tasks) {
     taskArrs = [];
     hourArr = [];
     var times = $(".hour");
-    $("<ul>").attr("id", function(){
-        for (i=0; i<times.length; i++) {
-
-        }
-    })
+    $("<ul>").attr("id", function () {
+      for (i = 0; i < times.length; i++) {}
+    });
   }
-}
+};
 auditTime();
